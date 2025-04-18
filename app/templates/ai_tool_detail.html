@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ tool.name }} - Ali Hasanov{% endblock %}
+
+{% block content %}
+<!-- Tool Header -->
+<section class="bg-gradient-to-r from-purple-600 to-pink-500 text-white py-16">
+    <div class="container mx-auto px-4">
+        <h1 class="text-4xl font-bold mb-4 text-center">{{ tool.name }}</h1>
+        {% if tool.category %}
+            <div class="text-center mb-4">
+                <span class="bg-white text-purple-800 px-4 py-1 rounded-full text-lg">{{ tool.category }}</span>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Tool Details -->
+<section class="py-16">
+    <div class="container mx-auto px-4">
+        <div class="flex flex-col lg:flex-row gap-10">
+            <!-- Main Content -->
+            <div class="lg:w-2/3">
+                <div class="bg-white rounded-lg shadow-md p-8">
+                    {% if tool.image %}
+                        <img src="{{ url_for('static', filename=tool.image) }}" alt="{{ tool.name }}" class="w-full h-64 object-cover rounded-lg mb-8">
+                    {% endif %}
+                    
+                    <div class="prose max-w-none">
+                        {{ tool.description|safe }}
+                    </div>
+                    
+                    {% if tool.url %}
+                        <div class="mt-8">
+                            <a href="{{ tool.url }}" target="_blank" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition inline-block">
+                                <i class="fas fa-external-link-alt mr-2"></i> Alətə Keçid
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="lg:w-1/3">
+                <div class="sticky top-8 space-y-6">
+                    <!-- Quick Info -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-2xl font-bold mb-6 border-b pb-3">Ətraflı Məlumat</h2>
+                        
+                        <div class="space-y-4">
+                            {% if tool.url %}
+                            <div>
+                                <h3 class="text-lg font-semibold">Rəsmi Sayt:</h3>
+                                <a href="{{ tool.url }}" target="_blank" class="text-blue-600 hover:text-blue-800 hover:underline break-all">{{ tool.url }}</a>
+                            </div>
+                            {% endif %}
+                            
+                            <div>
+                                <h3 class="text-lg font-semibold">Kateqoriya:</h3>
+                                <p>{{ tool.category or 'Təyin edilməyib' }}</p>
+                            </div>
+                            
+                            <div>
+                                <h3 class="text-lg font-semibold">Əlavə edildi:</h3>
+                                <p>{{ tool.created_at.strftime('%d.%m.%Y') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Similar Tools -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-xl font-bold mb-4">Oxşar Alətlər</h2>
+                        <ul class="space-y-3">
+                            {% for similar_tool in similar_tools %}
+                                <li>
+                                    <a href="{{ url_for('main.ai_tool_detail', slug=similar_tool.slug) }}" class="flex items-center p-2 hover:bg-gray-50 rounded-lg transition">
+                                        {% if similar_tool.image %}
+                                            <div class="w-12 h-12 rounded overflow-hidden mr-3">
+                                                <img src="{{ url_for('static', filename=similar_tool.image) }}" alt="{{ similar_tool.name }}" class="w-full h-full object-cover">
+                                            </div>
+                                        {% else %}
+                                            <div class="w-12 h-12 rounded bg-purple-100 flex items-center justify-center mr-3">
+                                                <i class="fas fa-robot text-purple-500"></i>
+                                            </div>
+                                        {% endif %}
+                                        <div>
+                                            <h3 class="font-semibold">{{ similar_tool.name }}</h3>
+                                            {% if similar_tool.category %}
+                                                <span class="text-xs text-gray-600">{{ similar_tool.category }}</span>
+                                            {% endif %}
+                                        </div>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    
+                    <!-- Contact Card -->
+                    <div class="bg-gray-100 rounded-lg p-6 text-center">
+                        <h3 class="text-xl font-bold mb-3">Süni İntellekt Məsləhəti?</h3>
+                        <p class="text-gray-600 mb-4">Süni intellekt layihələri ilə bağlı peşəkar məsləhətə ehtiyacınız var?</p>
+                        <a href="{{ url_for('main.contact') }}" class="bg-purple-600 hover:bg-purple-700 text-white w-full py-3 rounded-lg font-semibold transition inline-block">
+                            Mənimlə Əlaqə Saxlayın
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Related Content -->
+<section class="py-16 bg-gray-100">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold mb-8 text-center">Faydalı Məqalələr</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {% for post in related_posts %}
+                <div class="bg-white rounded-lg shadow-md overflow-hidden transition hover:shadow-xl">
+                    {% if post.featured_image %}
+                        <img src="{{ post.featured_image }}" alt="{{ post.title }}" class="w-full h-48 object-cover">
+                    {% else %}
+                        <div class="w-full h-48 bg-gradient-to-r from-purple-400 to-pink-500 flex items-center justify-center">
+                            <i class="fas fa-newspaper text-white text-5xl"></i>
+                        </div>
+                    {% endif %}
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-3">{{ post.title }}</h3>
+                        <p class="text-gray-600 mb-5">{{ post.summary|truncate(100) }}</p>
+                        <a href="{{ url_for('main.blog_post', slug=post.slug) }}" class="text-purple-600 hover:text-purple-800 font-semibold">Davamını Oxu →</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

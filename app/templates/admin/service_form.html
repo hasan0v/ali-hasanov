@@ -1,0 +1,101 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">{{ title }}</h1>
+    
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Xidmət Məlumatları</h6>
+        </div>
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+                
+                <div class="form-group">
+                    {{ form.title.label(class="form-control-label") }}
+                    {% if form.title.errors %}
+                        {{ form.title(class="form-control is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.title.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.title(class="form-control") }}
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    {{ form.short_description.label(class="form-control-label") }}
+                    {% if form.short_description.errors %}
+                        {{ form.short_description(class="form-control is-invalid", rows=3) }}
+                        <div class="invalid-feedback">
+                            {% for error in form.short_description.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.short_description(class="form-control", rows=3) }}
+                    {% endif %}
+                    <small class="text-muted">Qısa təsvir, kart nümayiş etdirilir</small>
+                </div>
+                
+                <div class="form-group">
+                    {{ form.description.label(class="form-control-label") }}
+                    {% if form.description.errors %}
+                        {{ form.description(class="form-control is-invalid", rows=10, id="editor") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.description.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.description(class="form-control", rows=10, id="editor") }}
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    {{ form.image.label(class="form-control-label") }}
+                    {{ form.image(class="form-control-file") }}
+                    {% if form.image.errors %}
+                        {% for error in form.image.errors %}
+                            <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    {% if service and service.image %}
+                    <div class="mt-2">
+                        <p>Mövcud şəkil:</p>
+                        <img src="{{ url_for('static', filename=service.image) }}" alt="{{ service.title }}" class="img-thumbnail" style="max-height: 200px;">
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group form-check">
+                    {{ form.featured(class="form-check-input") }}
+                    {{ form.featured.label(class="form-check-label") }}
+                </div>
+                
+                <div class="form-group">
+                    {{ form.submit(class="btn btn-primary") }}
+                    <a href="{{ url_for('admin.services') }}" class="btn btn-secondary">İmtina</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
+<script>
+    CKEDITOR.replace('editor', {
+        height: 300,
+        filebrowserUploadUrl: "{{ url_for('admin.upload_image', _external=True) }}",
+        filebrowserUploadMethod: 'form'
+    });
+</script>
+{% endblock %}

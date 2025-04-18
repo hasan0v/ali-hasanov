@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ project.title }} - Əli Həsənov{% endblock %}
+
+{% block content %}
+<!-- Project Header -->
+<section class="bg-gradient-to-r from-indigo-700 via-indigo-800 to-indigo-900 text-white py-16 shadow-md">
+    <div class="container mx-auto px-6 text-center">
+        <h1 class="text-4xl font-bold mb-4">{{ project.title }}</h1>
+        <p class="text-xl text-indigo-200 max-w-3xl mx-auto">{{ project.short_description }}</p>
+    </div>
+</section>
+
+<!-- Project Details -->
+<section class="py-16">
+    <div class="container mx-auto px-4">
+        <div class="flex flex-col lg:flex-row gap-10">
+            <!-- Main Content -->
+            <div class="lg:w-2/3">
+                <!-- Project Gallery -->
+                {% if images %}
+                <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+                    <h2 class="text-2xl font-bold mb-6">Layihə Qalereyası</h2>
+                    
+                    <!-- Main Image -->
+                    <div class="mb-4">
+                        <img id="mainImage" src="{{ url_for('static', filename=images[0].image_url) }}" alt="{{ images[0].caption or project.title }}" class="w-full h-96 object-contain rounded-lg">
+                        <p id="imageCaption" class="text-center text-gray-600 mt-2">{{ images[0].caption or '' }}</p>
+                    </div>
+                    
+                    <!-- Thumbnails -->
+                    <div class="grid grid-cols-4 gap-2">
+                        {% for image in images %}
+                        <img src="{{ url_for('static', filename=image.image_url) }}" 
+                             alt="{{ image.caption or project.title }}" 
+                             class="w-full h-24 object-cover rounded cursor-pointer hover:opacity-80 transition"
+                             onclick="showImage('{{ url_for('static', filename=image.image_url) }}', '{{ image.caption or '' }}')">
+                        {% endfor %}
+                    </div>
+                </div>
+                {% elif project.thumbnail %}
+                <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+                    <img src="{{ url_for('static', filename=project.thumbnail) }}" alt="{{ project.title }}" class="w-full h-96 object-contain rounded-lg">
+                </div>
+                {% endif %}
+                
+                <!-- Project Description -->
+                <div class="bg-white rounded-lg shadow-md p-8">
+                    <h2 class="text-2xl font-bold mb-6">Layihə Haqqında</h2>
+                    <div class="prose max-w-none">
+                        {{ project.description|safe }}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Project Details Sidebar -->
+            <div class="lg:w-1/3">
+                <div class="bg-white rounded-lg shadow-xl p-6 sticky top-24 border border-gray-200"> {# Added sticky top offset #}
+                    <h2 class="text-2xl font-semibold mb-6 border-b border-gray-200 pb-3 text-gray-800">Layihə Məlumatları</h2>
+                    
+                    <div class="space-y-4 text-sm">
+                        {% if project.client %}
+                        <div>
+                            <strong class="font-medium text-gray-500 block"><i class="fas fa-user-tie mr-2 text-indigo-500"></i> Müştəri:</strong>
+                            <p class="text-gray-700 pl-6">{{ project.client }}</p>
+                        </div>
+                        {% endif %}
+                        
+                        {% if project.completion_date %}
+                        <div>
+                            <strong class="font-medium text-gray-500 block"><i class="fas fa-calendar-alt mr-2 text-indigo-500"></i> Tamamlanma Tarixi:</strong>
+                            <p class="text-gray-700 pl-6">{{ project.completion_date.strftime('%d.%m.%Y') }}</p>
+                        </div>
+                        {% endif %}
+                        
+                        {% if project.technologies_used %}
+                        <div>
+                            <strong class="font-medium text-gray-500 block mb-2"><i class="fas fa-cogs mr-2 text-indigo-500"></i> İstifadə Olunan Texnologiyalar:</strong>
+                            <div class="flex flex-wrap gap-2 pl-6">
+                                {% for tech in project.technologies_used.split(',') %}
+                                    <span class="bg-gray-200 text-gray-700 text-xs px-2 py-1 rounded-full">{{ tech.strip() }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if project.project_url %}
+                        <div>
+                            <strong class="font-medium text-gray-500 block"><i class="fas fa-link mr-2 text-indigo-500"></i> Layihə Linki:</strong>
+                            <a href="{{ project.project_url }}" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:text-indigo-800 hover:underline break-all pl-6">{{ project.project_url }}</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mt-8">
+                        <a href="{{ url_for('main.contact') }}" class="w-full text-center bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-md font-semibold transition duration-300 shadow hover:shadow-md inline-block">
+                            Oxşar Layihə Üçün Əlaqə Saxlayın
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Related Projects -->
+<section class="py-16 bg-gray-100">
+    <div class="container mx-auto px-6">
+        <h2 class="text-3xl font-bold mb-8 text-center text-gray-800">Digər Layihələr</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {% for related_project in related_projects %}
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden transition duration-300 hover:shadow-xl transform hover:-translate-y-1 flex flex-col">
+                    {% if related_project.thumbnail %}
+                        <img src="{{ url_for('static', filename=related_project.thumbnail) }}" alt="{{ related_project.title }}" class="w-full h-56 object-cover">
+                    {% else %}
+                        <div class="w-full h-56 bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                            <i class="fas fa-project-diagram text-white text-5xl opacity-75"></i>
+                        </div>
+                    {% endif %}
+                    <div class="p-6 flex flex-col flex-grow">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ related_project.title }}</h3>
+                        <p class="text-gray-600 text-sm mb-4 flex-grow">{{ related_project.short_description|truncate(100) }}</p>
+                        <a href="{{ url_for('main.project_detail', slug=related_project.slug) }}" class="mt-auto text-indigo-600 hover:text-indigo-800 font-semibold group">
+                            Ətraflı Bax <i class="fas fa-arrow-right ml-1 transition-transform duration-200 group-hover:translate-x-1"></i>
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function showImage(src, caption) {
+        document.getElementById('mainImage').src = src;
+        document.getElementById('imageCaption').innerText = caption || '';
+    }
+</script>
+{% endblock %}

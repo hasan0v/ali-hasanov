@@ -1,0 +1,99 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Layihələr İdarəsi{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">Layihələr İdarəsi</h1>
+    
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Layihələr</h6>
+            <a href="{{ url_for('admin.create_project') }}" class="btn btn-primary btn-sm">
+                <i class="fas fa-plus"></i> Yeni Layihə
+            </a>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Ad</th>
+                            <th>Müştəri</th>
+                            <th>Tamamlanma Tarixi</th>
+                            <th>Seçilmiş</th>
+                            <th>Şəkil sayı</th>
+                            <th>Əməliyyatlar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for project in projects %}
+                        <tr>
+                            <td>{{ project.title }}</td>
+                            <td>{{ project.client or '-' }}</td>
+                            <td>{{ project.completion_date.strftime('%d.%m.%Y') if project.completion_date else '-' }}</td>
+                            <td>
+                                {% if project.featured %}
+                                <span class="badge badge-success">Bəli</span>
+                                {% else %}
+                                <span class="badge badge-secondary">Xeyr</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ project.images.count() }}</td>
+                            <td>
+                                <a href="{{ url_for('admin.edit_project', id=project.id) }}" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{{ url_for('admin.project_images', project_id=project.id) }}" class="btn btn-info btn-sm">
+                                    <i class="fas fa-images"></i>
+                                </a>
+                                <a href="{{ url_for('admin.delete_project', id=project.id) }}" class="btn btn-danger btn-sm delete-btn">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Layihəni Silmək İstəyirsiniz?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Bu layihəni və bütün əlaqəli şəkilləri silməyi təsdiqləyirsiniz?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Ləğv Et</button>
+                <a href="#" class="btn btn-danger" id="confirmDelete">Sil</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        $('#dataTable').DataTable();
+        
+        // Set up delete confirmation modal
+        $('.delete-btn').on('click', function(e) {
+            e.preventDefault();
+            var deleteUrl = $(this).attr('href');
+            $('#confirmDelete').attr('href', deleteUrl);
+            $('#deleteModal').modal('show');
+        });
+    });
+</script>
+{% endblock %}

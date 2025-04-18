@@ -1,0 +1,19 @@
+Flask==2.3.3
+Flask-Login==0.6.2
+Flask-WTF==1.1.1
+Flask-Caching==2.0.2
+Werkzeug==2.3.7
+WTForms==3.0.1
+# Replacing SQLAlchemy with Peewee ORM
+peewee==3.17.0
+psycopg2-binary>=2.9.9
+python-dotenv==1.0.0
+email-validator==2.0.0
+Pillow>=10.0.1
+python-slugify==8.0.1
+gunicorn==21.2.0
+python-dotenv==1.0.0
+email-validator==2.0.0
+Pillow>=10.0.1
+python-slugify==8.0.1
+gunicorn==21.2.0

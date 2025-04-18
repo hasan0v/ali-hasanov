@@ -1,0 +1,16 @@
+{% macro render_field(field) %}
+  {# Render the field label #}
+  {{ field.label(class="form-label") }}
+
+  {# Render the basic field input element (no dynamic attributes) #}
+  {{ field()|safe }}
+
+  {# Display errors if any #}
+  {% if field.errors %}
+    <div class="invalid-feedback text-red-500 text-sm mt-1">
+      {% for error in field.errors %}
+        <span>{{ error }}</span>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endmacro %}

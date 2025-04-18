@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Əli Həsənov - Portfolio{% endblock %}</title>
+    <!-- Tailwind CSS Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Bootstrap CSS (Commented out) -->
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+    <!-- Custom CSS (Commented out) -->
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"> -->
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-gray-100 font-sans leading-normal tracking-normal text-gray-800">
+    <!-- Header -->
+    <header class="bg-indigo-900 text-indigo-100 shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center"> {# Adjusted padding slightly #}
+            <a href="{{ url_for('main.home') }}" class="block hover:opacity-80 transition duration-200">
+                {# Logo Image - Adjust height (h-8, h-10, etc.) as needed #}
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Ali Hasanov Logo" class="h-8 w-auto">
+            </a>
+
+            <!-- Mobile menu button -->
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-white focus:outline-none">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+            
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex items-center space-x-4">
+                <a href="{{ url_for('main.home') }}" class="px-3 py-2 rounded hover:bg-indigo-700 transition duration-200">Ana Səhifə</a>
+                <a href="{{ url_for('main.about') }}" class="px-3 py-2 rounded hover:bg-indigo-700 transition duration-200">Haqqımda</a>
+                <a href="{{ url_for('main.blog') }}" class="px-3 py-2 rounded hover:bg-indigo-700 transition duration-200">Bloq</a>
+                <a href="{{ url_for('main.services') }}" class="px-3 py-2 rounded hover:bg-indigo-700 transition duration-200">Xidmətlər</a>
+                <a href="{{ url_for('main.projects') }}" class="px-3 py-2 rounded hover:bg-indigo-700 transition duration-200">Portfel</a>
+                <a href="{{ url_for('main.ai_tools') }}" class="px-3 py-2 rounded hover:bg-indigo-700 transition duration-200">Sİ Alətləri</a>
+                <a href="{{ url_for('main.contact') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded transition duration-200 shadow hover:shadow-md">Əlaqə</a>
+            </div>
+        </nav>
+
+        <!-- Mobile Navigation -->
+        <div id="mobile-menu" class="hidden md:hidden bg-indigo-800 px-4 pt-2 pb-4 space-y-1 sm:px-6">
+            <a href="{{ url_for('main.home') }}" class="block px-3 py-2 rounded hover:bg-indigo-700">Ana Səhifə</a>
+            <a href="{{ url_for('main.about') }}" class="block px-3 py-2 rounded hover:bg-indigo-700">Haqqımda</a>
+            <a href="{{ url_for('main.blog') }}" class="block px-3 py-2 rounded hover:bg-indigo-700">Bloq</a>
+            <a href="{{ url_for('main.services') }}" class="block px-3 py-2 rounded hover:bg-indigo-700">Xidmətlər</a>
+            <a href="{{ url_for('main.projects') }}" class="block px-3 py-2 rounded hover:bg-indigo-700">Portfel</a>
+            <a href="{{ url_for('main.ai_tools') }}" class="block px-3 py-2 rounded hover:bg-indigo-700">Sİ Alətləri</a>
+            <a href="{{ url_for('main.contact') }}" class="block px-3 py-2 rounded hover:bg-indigo-700">Əlaqə</a>
+        </div>
+    </header>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="container mx-auto mt-4 px-6">
+                {% for category, message in messages %}
+                    {# Using Tailwind classes for alerts - map category to colors #}
+                    {% set alert_color = 'bg-indigo-100 border-indigo-500 text-indigo-700' %} {# Default: info/message #}
+                    {% if category == 'success' %}{% set alert_color = 'bg-green-100 border-green-500 text-green-700' %}{% endif %}
+                    {% if category == 'warning' %}{% set alert_color = 'bg-yellow-100 border-yellow-500 text-yellow-700' %}{% endif %}
+                    {% if category == 'danger' %}{% set alert_color = 'bg-red-100 border-red-500 text-red-700' %}{% endif %}
+                    <div class="{{ alert_color }} border-l-4 p-4 mb-4 relative rounded-r-md shadow" role="alert">
+                        <p class="font-bold">{{ category.capitalize() if category != 'message' else 'Məlumat' }}</p> {# Translated 'Information' #}
+                        <p class="text-sm">{{ message }}</p>
+                        {# Simple close button - requires JS to function #}
+                        <button type="button" class="absolute top-0 bottom-0 right-0 px-4 py-3" onclick="this.parentElement.style.display='none';">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Main Content -->
+    <main class="min-h-[calc(100vh-10rem)]"> {# Adjust min-height based on header/footer size #}
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-indigo-900 text-indigo-200 mt-16 py-10">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <!-- About -->
+                <div>
+                    {# Optionally use logo here too, or keep text #}
+                    <a href="{{ url_for('main.home') }}" class="inline-block mb-3">
+                         <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Ali Hasanov Logo" class="h-7 w-auto">
+                    </a>
+                    {# <h3 class="text-lg font-semibold text-white mb-3">Ali Hasanov</h3> #}
+                    <p class="text-sm mb-4">Python Developer | Data Scientist | Machine Learning Engineer. Passionate about leveraging AI and technology.</p>
+                    <div class="flex space-x-4">
+                        <a href="https://linkedin.com/in/ali-hasanov" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition duration-200"><i class="fab fa-linkedin fa-lg"></i></a>
+                        {# Add other social links if available #}
+                        <!-- <a href="#" class="text-gray-400 hover:text-white transition duration-200"><i class="fab fa-github fa-lg"></i></a> -->
+                        <!-- <a href="#" class="text-gray-400 hover:text-white transition duration-200"><i class="fab fa-twitter fa-lg"></i></a> -->
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h3 class="text-lg font-semibold text-indigo-100 mb-3">Sürətli Keçidlər</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="{{ url_for('main.home') }}" class="hover:text-white hover:underline transition duration-200">Ana Səhifə</a></li>
+                        <li><a href="{{ url_for('main.about') }}" class="hover:text-white hover:underline transition duration-200">Haqqımda</a></li>
+                        <li><a href="{{ url_for('main.services') }}" class="hover:text-white hover:underline transition duration-200">Xidmətlər</a></li>
+                        <li><a href="{{ url_for('main.projects') }}" class="hover:text-white hover:underline transition duration-200">Portfolio</a></li>
+                        <li><a href="{{ url_for('main.blog') }}" class="hover:text-white hover:underline transition duration-200">Bloq</a></li>
+                        <li><a href="{{ url_for('main.contact') }}" class="hover:text-white hover:underline transition duration-200">Əlaqə</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact Info -->
+                <div>
+                    <h3 class="text-lg font-semibold text-indigo-100 mb-3">Əlaqə</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-center"><i class="fas fa-envelope mr-2 w-4 text-center text-indigo-300"></i> <a href="mailto:contact@ali-hasanov.com" class="hover:text-white hover:underline transition duration-200">contact@ali-hasanov.com</a></li>
+                        <li class="flex items-center"><i class="fas fa-phone mr-2 w-4 text-center text-indigo-300"></i> <a href="tel:+994707616288" class="hover:text-white hover:underline transition duration-200">+994 70 761-62-88</a></li>
+                        <li class="flex items-start"><i class="fas fa-map-marker-alt mr-2 w-4 text-center pt-1 text-indigo-300"></i> <span>Əli Vəliyev 7, Bakı, Azərbaycan</span></li> {# Translated Address #}
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-indigo-700 pt-6 text-center text-sm text-indigo-300">
+                <p>&copy; {{ now.year }} Əli Həsənov. Bütün hüquqlar qorunur.</p> {# Translated Copyright #}
+                 <div class="mt-2">
+                    {# Add links if these pages exist #}
+                    <!-- <a href="{{ url_for('main.privacy') }}" class="hover:text-white hover:underline mx-2">Məxfilik Siyasəti</a> -->
+                    <!-- <a href="{{ url_for('main.terms') }}" class="hover:text-white hover:underline mx-2">Terms of Service</a> -->
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS with Popper (Commented out) -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> -->
+    <!-- Custom JS (Keep if needed for non-Bootstrap functionality) -->
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+</body>
+</html>

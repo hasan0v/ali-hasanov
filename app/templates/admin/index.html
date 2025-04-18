@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - Ali Hasanov{% endblock %}
+
+{% block extra_css %}
+<style>
+    .admin-sidebar {
+        min-height: calc(100vh - 150px);
+    }
+    .admin-content {
+        min-height: calc(100vh - 150px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid mx-auto px-4 py-6">
+    <div class="flex flex-col md:flex-row">
+        <!-- Sidebar -->
+        <div class="w-full md:w-64 mb-6 md:mb-0 bg-white rounded-lg shadow-md p-4 admin-sidebar">
+            <h3 class="text-xl font-bold mb-4 pb-2 border-b border-gray-200">Admin Panel</h3>
+            <ul class="space-y-2">
+                <li>
+                    <a href="{{ url_for('admin.index') }}" class="block px-4 py-2 rounded-md {% if request.endpoint == 'admin.index' %}bg-blue-100 text-blue-600 font-semibold{% else %}hover:bg-gray-100{% endif %}">
+                        <i class="fas fa-tachometer-alt mr-2"></i> Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin.posts') }}" class="block px-4 py-2 rounded-md {% if 'admin.posts' in request.endpoint %}bg-blue-100 text-blue-600 font-semibold{% else %}hover:bg-gray-100{% endif %}">
+                        <i class="fas fa-newspaper mr-2"></i> Bloq Yazıları
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin.categories') }}" class="block px-4 py-2 rounded-md {% if 'admin.categories' in request.endpoint %}bg-blue-100 text-blue-600 font-semibold{% else %}hover:bg-gray-100{% endif %}">
+                        <i class="fas fa-folder mr-2"></i> Kateqoriyalar
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin.services') }}" class="block px-4 py-2 rounded-md {% if 'admin.services' in request.endpoint %}bg-blue-100 text-blue-600 font-semibold{% else %}hover:bg-gray-100{% endif %}">
+                        <i class="fas fa-cogs mr-2"></i> Xidmətlər
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin.projects') }}" class="block px-4 py-2 rounded-md {% if 'admin.projects' in request.endpoint %}bg-blue-100 text-blue-600 font-semibold{% else %}hover:bg-gray-100{% endif %}">
+                        <i class="fas fa-project-diagram mr-2"></i> Layihələr
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin.ai_tools') }}" class="block px-4 py-2 rounded-md {% if 'admin.ai_tools' in request.endpoint %}bg-blue-100 text-blue-600 font-semibold{% else %}hover:bg-gray-100{% endif %}">
+                        <i class="fas fa-robot mr-2"></i> Sİ Alətləri
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin.contacts') }}" class="block px-4 py-2 rounded-md {% if 'admin.contacts' in request.endpoint %}bg-blue-100 text-blue-600 font-semibold{% else %}hover:bg-gray-100{% endif %}">
+                        <i class="fas fa-envelope mr-2"></i> Mesajlar
+                    </a>
+                </li>
+                <li class="pt-4 mt-4 border-t border-gray-200">
+                    <a href="{{ url_for('main.home') }}" class="block px-4 py-2 rounded-md hover:bg-gray-100">
+                        <i class="fas fa-home mr-2"></i> Sayta Qayıt
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('auth.logout') }}" class="block px-4 py-2 rounded-md hover:bg-gray-100 text-red-600">
+                        <i class="fas fa-sign-out-alt mr-2"></i> Çıxış
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="w-full md:flex-1 md:ml-6 bg-white rounded-lg shadow-md p-6 admin-content">
+            {% block admin_content %}
+            <!-- Dashboard Overview -->
+            <h2 class="text-2xl font-bold mb-6">Dashboard</h2>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <!-- Blog Stats Card -->
+                <div class="bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-lg shadow-md p-6">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-1">Bloq Yazıları</h3>
+                            <p class="text-3xl font-bold">{{ post_count }}</p>
+                        </div>
+                        <div class="rounded-full bg-white bg-opacity-30 p-3">
+                            <i class="fas fa-newspaper text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Services Stats Card -->
+                <div class="bg-gradient-to-br from-green-500 to-green-600 text-white rounded-lg shadow-md p-6">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-1">Xidmətlər</h3>
+                            <p class="text-3xl font-bold">{{ service_count }}</p>
+                        </div>
+                        <div class="rounded-full bg-white bg-opacity-30 p-3">
+                            <i class="fas fa-cogs text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Projects Stats Card -->
+                <div class="bg-gradient-to-br from-purple-500 to-purple-600 text-white rounded-lg shadow-md p-6">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-1">Layihələr</h3>
+                            <p class="text-3xl font-bold">{{ project_count }}</p>
+                        </div>
+                        <div class="rounded-full bg-white bg-opacity-30 p-3">
+                            <i class="fas fa-project-diagram text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- AI Tools Stats Card -->
+                <div class="bg-gradient-to-br from-yellow-500 to-yellow-600 text-white rounded-lg shadow-md p-6">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-1">Sİ Alətləri</h3>
+                            <p class="text-3xl font-bold">{{ tool_count }}</p>
+                        </div>
+                        <div class="rounded-full bg-white bg-opacity-30 p-3">
+                            <i class="fas fa-robot text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Messages Stats Card -->
+                <div class="bg-gradient-to-br from-red-500 to-red-600 text-white rounded-lg shadow-md p-6">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-1">Yeni Mesajlar</h3>
+                            <p class="text-3xl font-bold">{{ contact_count }}</p>
+                        </div>
+                        <div class="rounded-full bg-white bg-opacity-30 p-3">
+                            <i class="fas fa-envelope text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-gray-50 border border-gray-200 rounded-lg p-6">
+                <h3 class="text-xl font-bold mb-4">Sürətli Əməliyyatlar</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <a href="{{ url_for('admin.create_post') }}" class="flex items-center p-4 bg-white border border-gray-200 rounded-lg hover:bg-blue-50 hover:border-blue-300 transition">
+                        <div class="rounded-full bg-blue-100 p-3 mr-4">
+                            <i class="fas fa-pen text-blue-600"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">Yeni Bloq Yazısı</h4>
+                            <p class="text-sm text-gray-600">Yeni bir bloq məqaləsi yaradın</p>
+                        </div>
+                    </a>
+                    
+                    <a href="{{ url_for('admin.create_service') }}" class="flex items-center p-4 bg-white border border-gray-200 rounded-lg hover:bg-green-50 hover:border-green-300 transition">
+                        <div class="rounded-full bg-green-100 p-3 mr-4">
+                            <i class="fas fa-plus-circle text-green-600"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">Yeni Xidmət</h4>
+                            <p class="text-sm text-gray-600">Yeni bir xidmət təklifi əlavə edin</p>
+                        </div>
+                    </a>
+                    
+                    <a href="{{ url_for('admin.create_project') }}" class="flex items-center p-4 bg-white border border-gray-200 rounded-lg hover:bg-purple-50 hover:border-purple-300 transition">
+                        <div class="rounded-full bg-purple-100 p-3 mr-4">
+                            <i class="fas fa-folder-plus text-purple-600"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">Yeni Layihə</h4>
+                            <p class="text-sm text-gray-600">Portfolio-ya yeni bir layihə əlavə edin</p>
+                        </div>
+                    </a>
+                    
+                    <a href="{{ url_for('admin.create_ai_tool') }}" class="flex items-center p-4 bg-white border border-gray-200 rounded-lg hover:bg-yellow-50 hover:border-yellow-300 transition">
+                        <div class="rounded-full bg-yellow-100 p-3 mr-4">
+                            <i class="fas fa-tools text-yellow-600"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">Yeni Sİ Aləti</h4>
+                            <p class="text-sm text-gray-600">Sİ alətlər siyahısına yeni bir alət əlavə edin</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            {% endblock %}
+        </div>
+    </div>
+</div>
+{% endblock %}

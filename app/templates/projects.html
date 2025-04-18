@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}Layihə Portfoliosu - Əli Həsənov{% endblock %}
+
+{% block content %}
+<!-- Projects Header -->
+<section class="bg-gradient-to-r from-indigo-700 via-indigo-800 to-indigo-900 text-white py-16 shadow-md">
+    <div class="container mx-auto px-6 text-center">
+        <h1 class="text-4xl font-bold mb-4">Layihə Portfoliosu</h1>
+        <p class="text-xl text-indigo-200 max-w-3xl mx-auto">Süni intellekt və proqramlaşdırma sahəsində həyata keçirdiyim innovativ layihələr.</p>
+    </div>
+</section>
+
+<!-- Projects Filter (Using Category) -->
+<section class="py-8 bg-gray-100">
+    <div class="container mx-auto px-6">
+        <div class="flex flex-wrap justify-center gap-3">
+            {# 'categories' variable needs to be passed from the route #}
+            <a href="{{ url_for('main.projects') }}" class="px-4 py-2 rounded-full text-sm font-medium {% if not selected_category %}bg-indigo-600 text-white shadow{% else %}bg-white hover:bg-gray-200 text-gray-700{% endif %} transition">
+                Hamısı
+            </a>
+            {% if categories %}
+                {% for category in categories %}
+                <a href="{{ url_for('main.projects', category=category.slug) }}" class="px-4 py-2 rounded-full text-sm font-medium {% if selected_category == category.slug %}bg-indigo-600 text-white shadow{% else %}bg-white hover:bg-gray-200 text-gray-700{% endif %} transition">
+                    {{ category.name }}
+                </a>
+                {% endfor %}
+            {% else %}
+                 <!-- Placeholder/Example Filters if categories not passed -->
+                 <span class="px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-700">Kateqoriya 1</span>
+                 <span class="px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-700">Kateqoriya 2</span>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Projects Grid -->
+<section class="py-16">
+    <div class="container mx-auto px-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% if projects %}
+                {% for project in projects %}
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden transition duration-300 hover:shadow-xl transform hover:-translate-y-1 flex flex-col">
+                        {% if project.thumbnail %}
+                            <img src="{{ url_for('static', filename=project.thumbnail) }}" alt="{{ project.title }}" class="w-full h-56 object-cover">
+                        {% else %}
+                            <div class="w-full h-56 bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                                <i class="fas fa-project-diagram text-white text-5xl opacity-75"></i>
+                            </div>
+                        {% endif %}
+                        <div class="p-6 flex flex-col flex-grow">
+                            <h2 class="text-xl font-semibold text-gray-800 mb-2">{{ project.title }}</h2>
+                            <p class="text-gray-600 text-sm mb-4 flex-grow">{{ project.short_description }}</p>
+
+                            {% if project.technologies_used %}
+                            <div class="mb-4">
+                                {# <p class="text-xs text-gray-500 mb-1 uppercase tracking-wider">Texnologiyalar:</p> #}
+                                <div class="flex flex-wrap gap-2">
+                                    {% for tech in project.technologies_used.split(',') %}
+                                        <span class="bg-gray-200 text-gray-700 text-xs px-2 py-1 rounded-full">{{ tech.strip() }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <a href="{{ url_for('main.project_detail', slug=project.slug) }}" class="mt-auto inline-block text-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded transition duration-200 shadow hover:shadow-md">
+                                Ətraflı Bax
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-span-full text-center py-12">
+                    <p class="text-gray-500 text-lg">Hazırda layihə məlumatları mövcud deyil.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="py-16 bg-gray-100">
+    <div class="container mx-auto px-6 text-center">
+        <h2 class="text-3xl lg:text-4xl font-bold text-gray-800 mb-6">Layihə Təklifiniz Var?</h2>
+        <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">Süni intellekt və ya proqramlaşdırma layihəniz üçün peşəkar həll istəyirsinizsə, mənimlə əlaqə saxlayın.</p>
+        <a href="{{ url_for('main.contact') }}" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-md font-semibold transition duration-300 shadow hover:shadow-md">Əlaqə Saxla</a>
+    </div>
+</section>
+{% endblock %}

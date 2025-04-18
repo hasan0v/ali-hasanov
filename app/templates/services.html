@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Xidmətlər - Ali Hasanov{% endblock %}
+
+{% block content %}
+<!-- Services Header -->
+<section class="bg-gradient-to-r from-blue-600 to-indigo-800 text-white py-16">
+    <div class="container mx-auto px-4">
+        <h1 class="text-4xl font-bold mb-4 text-center">Xidmətlər</h1>
+        <p class="text-xl text-center max-w-3xl mx-auto">Süni intellekt, proqramlaşdırma və rəqəmsal transformasiya üzrə təqdim etdiyim peşəkar xidmətlər.</p>
+    </div>
+</section>
+
+<!-- Services List -->
+<section class="py-16">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% if services %}
+                {% for service in services %}
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden transition hover:shadow-xl">
+                        {% if service.image %}
+                            <img src="{{ url_for('static', filename=service.image) }}" alt="{{ service.title }}" class="w-full h-48 object-cover">
+                        {% else %}
+                            <div class="w-full h-48 bg-gradient-to-r from-blue-400 to-indigo-500 flex items-center justify-center">
+                                <i class="fas fa-cogs text-white text-5xl"></i>
+                            </div>
+                        {% endif %}
+                        <div class="p-6">
+                            <h2 class="text-2xl font-bold mb-3">{{ service.title }}</h2>
+                            <p class="text-gray-600 mb-5">{{ service.short_description }}</p>
+                            <a href="{{ url_for('main.service_detail', slug=service.slug) }}" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded inline-block transition">
+                                Ətraflı
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-span-full text-center py-12">
+                    <p class="text-gray-500 text-lg">Hazırda xidmət məlumatları mövcud deyil.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="py-16 bg-gray-100">
+    <div class="container mx-auto px-4 text-center">
+        <h2 class="text-3xl font-bold mb-6">Əlavə Məlumat üçün Əlaqə Saxlayın</h2>
+        <p class="text-lg mb-8 max-w-2xl mx-auto">Təqdim etdiyim xidmətlər haqqında ətraflı məlumat əldə etmək üçün mənimlə əlaqə saxlayın.</p>
+        <a href="{{ url_for('main.contact') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition inline-block">Əlaqə</a>
+    </div>
+</section>
+{% endblock %}

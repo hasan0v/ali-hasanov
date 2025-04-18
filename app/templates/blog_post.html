@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ post.title }} - Ali Hasanov{% endblock %}
+
+{% block content %}
+<!-- Post Header -->
+<section class="bg-gradient-to-r from-green-600 to-teal-500 text-white py-16">
+    <div class="container mx-auto px-4">
+        <h1 class="text-4xl font-bold mb-4 text-center">{{ post.title }}</h1>
+        <div class="flex items-center justify-center text-sm">
+            <span>{{ post.created_at.strftime('%d.%m.%Y') }}</span>
+            {% if post.category %}
+            <span class="mx-2">•</span>
+            <span>{{ post.category.name }}</span>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Post Content -->
+<section class="py-16">
+    <div class="container mx-auto px-4">
+        <div class="flex flex-col lg:flex-row gap-10">
+            <!-- Main Content -->
+            <div class="lg:w-2/3">
+                <div class="bg-white rounded-lg shadow-md p-8">
+                    {% if post.featured_image %}
+                        <img src="{{ post.featured_image }}" alt="{{ post.title }}" class="w-full h-auto object-cover rounded-lg mb-8">
+                    {% endif %}
+                    
+                    <div class="prose lg:prose-xl max-w-none">
+                        {{ post.content|safe }}
+                    </div>
+                    
+                    <!-- Tags -->
+                    {% if post.post_tags %}
+                    <div class="mt-10 pt-6 border-t">
+                        <h3 class="text-lg font-semibold mb-2">Teqlər:</h3>
+                        <div class="flex flex-wrap gap-2">
+                            {% for post_tag in post.post_tags %}
+                                <a href="{{ url_for('main.blog', tag=post_tag.tag.slug) }}" class="bg-gray-100 hover:bg-gray-200 text-gray-800 px-3 py-1 rounded transition">{{ post_tag.tag.name }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Social Sharing -->
+                    <div class="mt-10 pt-6 border-t">
+                        <h3 class="text-lg font-semibold mb-2">Paylaşın:</h3>
+                        <div class="flex gap-2">
+                            <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.url|urlencode }}" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white w-10 h-10 rounded-full flex items-center justify-center transition">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="https://twitter.com/intent/tweet?url={{ request.url|urlencode }}&text={{ post.title|urlencode }}" target="_blank" class="bg-blue-400 hover:bg-blue-500 text-white w-10 h-10 rounded-full flex items-center justify-center transition">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.url|urlencode }}&title={{ post.title|urlencode }}" target="_blank" class="bg-blue-700 hover:bg-blue-800 text-white w-10 h-10 rounded-full flex items-center justify-center transition">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Author Card -->
+                <div class="bg-white rounded-lg shadow-md p-6 mt-8">
+                    <div class="flex items-center">
+                        {% if post.user.profile_pic %}
+                            <img src="{{ url_for('static', filename=post.user.profile_pic) }}" alt="{{ post.user.name or post.user.username }}" class="w-16 h-16 rounded-full object-cover mr-4">
+                        {% else %}
+                            <div class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mr-4">
+                                <i class="fas fa-user text-green-500 text-2xl"></i>
+                            </div>
+                        {% endif %}
+                        <div>
+                            <h3 class="text-xl font-bold">{{ post.user.name or post.user.username }}</h3>
+                            {% if post.user.bio %}
+                                <p class="text-gray-600">{{ post.user.bio }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="lg:w-1/3">
+                <div class="sticky top-8 space-y-8">
+                    <!-- Categories -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-xl font-bold mb-4">Kateqoriyalar</h2>
+                        <ul class="space-y-2">
+                            {% for category in categories %}
+                                <li>
+                                    <a href="{{ url_for('main.blog', category=category.slug) }}" class="flex items-center justify-between py-2 px-3 rounded {% if post.category and post.category.id == category.id %}bg-green-100 text-green-800{% else %}hover:bg-gray-100{% endif %} transition">
+                                        <span>{{ category.name }}</span>
+                                        <span class="bg-gray-200 text-gray-700 px-2 py-1 rounded-full text-xs">
+                                            {{ category.posts.count() }}
+                                        </span>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    
+                    <!-- Related Posts -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-xl font-bold mb-4">Əlaqəli Məqalələr</h2>
+                        {% if related_posts %}
+                            <ul class="space-y-4">
+                                {% for related in related_posts %}
+                                    <li>
+                                        <a href="{{ url_for('main.blog_post', slug=related.slug) }}" class="flex hover:bg-gray-50 rounded-lg p-2 transition">
+                                            {% if related.featured_image %}
+                                                <div class="w-20 h-16 rounded overflow-hidden mr-3">
+                                                    <img src="{{ related.featured_image }}" alt="{{ related.title }}" class="w-full h-full object-cover">
+                                                </div>
+                                            {% else %}
+                                                <div class="w-20 h-16 rounded bg-green-100 flex items-center justify-center mr-3">
+                                                    <i class="fas fa-newspaper text-green-500"></i>
+                                                </div>
+                                            {% endif %}
+                                            <div>
+                                                <h3 class="font-semibold line-clamp-2">{{ related.title }}</h3>
+                                                <p class="text-xs text-gray-500">{{ related.created_at.strftime('%d.%m.%Y') }}</p>
+                                            </div>
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="text-gray-500">Əlaqəli məqalələr tapılmadı.</p>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Newsletter -->
+                    <div class="bg-gray-100 rounded-lg p-6">
+                        <h3 class="text-xl font-bold mb-3">Abunə Olun</h3>
+                        <p class="text-gray-600 mb-4">Ən son məqalələrdən xəbərdar olmaq üçün bülletenimizə abunə olun.</p>
+                        <form>
+                            <input type="email" placeholder="E-poçt ünvanınız" class="w-full px-4 py-2 rounded border-gray-300 mb-2 focus:ring-green-500 focus:border-green-500">
+                            <button type="submit" class="bg-green-600 hover:bg-green-700 text-white w-full py-2 rounded font-semibold transition">Abunə Ol</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
